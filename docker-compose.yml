@@ -1,0 +1,48 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: nguyenle
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: school
+    container_name: school-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      school:
+  db:
+    image: mysql:8.0
+    container_name: school-db
+    restart: unless-stopped
+    ports:
+      - 3307:3306    
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_USER: ${DB_USERNAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      school:
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: school-nginx
+    restart: unless-stopped
+    ports:
+      - 8008:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      school:
+networks:
+  school:
+    driver: bridge
