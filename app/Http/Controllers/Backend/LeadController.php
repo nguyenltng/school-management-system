@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class TargetController extends Controller
+class LeadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,7 +32,7 @@ class TargetController extends Controller
      */
     public function index(Request $request)
     {
-        $stage = AppHelper::STUDENT_STAGE['TARGET'];
+        $stage = AppHelper::STUDENT_STAGE['LEAD'];
         $status = $request->get('status');
 
         $students = Student::if($status, 'status', '=', $status)
@@ -41,7 +41,7 @@ class TargetController extends Controller
             ->get();
 
         //if section is mention then full this class section list
-        return view('backend.target.list', compact('students', 'status', 'stage'));
+        return view('backend.lead.list', compact('students', 'status', 'stage'));
     }
 
 
@@ -86,7 +86,7 @@ class TargetController extends Controller
         }
 
 
-        return view('backend.target.add', compact(
+        return view('backend.lead.add', compact(
             'regiInfo',
             'student',
             'gender',
@@ -114,10 +114,6 @@ class TargetController extends Controller
     {
         //todo: wrong class section entry student bug fixed.
         //validate form
-        $messages = [
-            'photo.max' => 'The :attribute size must be under 200kb.',
-            'photo.dimensions' => 'The :attribute dimensions min 150 X 150.',
-        ];
         $rules = [
             'name' => 'required|min:5|max:255',
             'nick_name' => 'nullable|min:2|max:50',
@@ -142,7 +138,7 @@ class TargetController extends Controller
 
         $this->validate($request, $rules);
         $data = $request->all();
-
+        $data['stage'] = AppHelper::STUDENT_STAGE['LEAD'];
         DB::beginTransaction();
         try {
             // now save employee
@@ -151,14 +147,14 @@ class TargetController extends Controller
             DB::commit();
 
             //now notify the admins about this record
-            $msg = $data['name'] . " student added by " . auth()->user()->name;
+            $msg = $data['name'] . " Lead added by " . auth()->user()->name;
             $nothing = AppHelper::sendNotificationToAdmins('info', $msg);
             // Notification end
-            return redirect()->route('target.create')->with('success', 'Target added!');
+            return redirect()->route('lead.create')->with('success', 'Lead added!');
         } catch (\Exception $e) {
             DB::rollback();
             $message = str_replace(array("\r", "\n", "'", "`"), ' ', $e->getMessage());
-            return redirect()->route('target.create')->with("error", $message);
+            return redirect()->route('lead.create')->with("error", $message);
         }
     }
 
@@ -203,7 +199,7 @@ class TargetController extends Controller
             }
         }
 
-        return view('backend.target.view', compact('student', 'username'));
+        return view('backend.lead.view', compact('student', 'username'));
     }
 
 
@@ -226,7 +222,7 @@ class TargetController extends Controller
         $nationality = ($student->nationality != "Bangladeshi") ? "Other" : "";
 
 
-        return view('backend.target.add', compact(
+        return view('backend.lead.add', compact(
             'regiInfo',
             'student',
             'gender',
@@ -284,7 +280,7 @@ class TargetController extends Controller
         try {
 
             $messageType = "success";
-            $message = "Target updated!";
+            $message = "Lead updated!";
 
             // now save student
             $student->fill($data);
@@ -303,14 +299,14 @@ class TargetController extends Controller
             DB::commit();
 
 
-            return redirect()->route('target.index')->with($messageType, $message);
+            return redirect()->route('lead.index')->with($messageType, $message);
         } catch (\Exception $e) {
             DB::rollback();
             $message = str_replace(array("\r", "\n", "'", "`"), ' ', $e->getMessage());
             //            dd($message);
         }
 
-        return redirect()->route('target.edit', $student->id)->with("error", $message);;
+        return redirect()->route('lead.edit', $student->id)->with("error", $message);;
     }
 
 
@@ -343,12 +339,12 @@ class TargetController extends Controller
             Cache::forget('student_count_by_class');
             Cache::forget('student_count_by_section');
 
-            return redirect()->route('target.index')->with('success', 'Target deleted.');
+            return redirect()->route('lead.index')->with('success', 'Lead deleted.');
         } catch (\Exception $e) {
             DB::rollback();
             $message = str_replace(array("\r", "\n", "'", "`"), ' ', $e->getMessage());
         }
-        return redirect()->route('target.index')->with('error', $message);
+        return redirect()->route('lead.index')->with('error', $message);
     }
 
     /**
@@ -363,8 +359,7 @@ class TargetController extends Controller
         }
 
         $student->stage = (int)$request->stage + 1;
-        $student->status = 1; // New
-
+        // var_dump($student); die;
         $message = 'Something went wrong!';
 
         DB::beginTransaction();
@@ -372,12 +367,12 @@ class TargetController extends Controller
             $student->save();
 
             DB::commit();
-            return redirect()->route('target.index')->with('success', 'Stage change successfully.');
+            return redirect()->route('lead.index')->with('success', 'Stage change successfully.');
         } catch (\Exception $e) {
             DB::rollback();
             $message = str_replace(array("\r", "\n", "'", "`"), ' ', $e->getMessage());
         }
-        return redirect()->route('target.index')->with('error', $message);
+        return redirect()->route('lead.index')->with('error', $message);
     }
 
     /**
@@ -415,13 +410,13 @@ class TargetController extends Controller
     public function import(Request $request)
     {
         try {
-            $stage = $request->query->get('stage');
+
+            $stage = (int)$request->get('stage');
             Excel::import(new StudentsImport($stage), request()->file('file'));
-            return back()->with('success', 'Target Imported Successfully.');
+            return back()->with('success', 'Leads Imported Successfully.');
         } catch (\Exception $exception) {
             // return back();
             var_dump($exception->getMessage());
-            die;
         }
     }
 
@@ -430,9 +425,7 @@ class TargetController extends Controller
         try {
             $status = $request->query->get('status', 0);
             $stage = $request->query->get('stage');
-            
-            var_dump($stage); die;
-            return Excel::download(new StudentExport($status, $stage), 'target.xlsx');
+            return Excel::download(new StudentExport($status, $stage), 'lead.xlsx');
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
             die;
@@ -442,7 +435,7 @@ class TargetController extends Controller
     public function showImport()
     {
         try {
-            return view('backend.target.import');
+            return view('backend.lead.import');
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
             die;

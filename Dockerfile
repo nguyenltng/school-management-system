@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    vim
+    vim \ 
+    libzip-dev \
+         && docker-php-ext-install zip
 
 # Clear cache
 # RUN apt-get clean && rm -rf /var/lib/apt/lists/*

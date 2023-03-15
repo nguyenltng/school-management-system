@@ -86,29 +86,23 @@ export default class Academic {
             loadSubjects(class_id);
         });
 
-        $('#student_list_filter').on('change', function () {
-            // let class_id = $('select[name="class_id"]').val();
-            // let section_id = $(this).val();
-            let status = $('select[name="status"]').val();
-            // let urlLastPart = '';
-            // if (institute_category == 'college') {
-            //     let ac_year = $('select[name="academic_year"]').val();
-            //     if (!ac_year) {
-            //         toastr.error('Select academic year!');
-            //         return false;
-            //     }
 
-            //     urlLastPart = "&academic_year=" + ac_year;
-            // }
-            // urlLastPart += "&status="+status;
+        $("#student-export").on('click', function(){
+            let status = $('select[name="status"]').val();
+            let stage = $('input[name="stage"]').val();
+
+            let getUrl = window.location.href.split('?')[0] + "/export?status=" + status + "&stage=" + stage;
+            window.location = getUrl;
+        });  
+      
+              
+        
+        $('#student_list_filter').on('change', function () {
+            let status = $('select[name="status"]').val();
+
             let getUrl = window.location.href.split('?')[0] + "?status=" + status;
             window.location = getUrl;
-            // if (class_id && section_id) {
-            //     let getUrl = window.location.href.split('?')[0] + "?class=" + class_id + "&section=" + section_id + urlLastPart;
-            //     window.location = getUrl;
-
-            // }
-
+      
         });
         $('select[name="academic_year"]').on('change', function () {
             $('#student_list_filter').trigger('change');
@@ -256,7 +250,6 @@ export default class Academic {
                 $('select[name="fourth_subject"]').val('').change();
             }
             // console.log(selectiveSubjects, fourthSubject);
-
         }
     }
     static getSection(class_id) {

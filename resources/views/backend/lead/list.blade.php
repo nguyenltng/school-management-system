@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 <!-- Page title -->
-@section('pageTitle') Target @endsection
+@section('pageTitle') Lead @endsection
 <!-- End block -->
 
 <!-- Page body extra class -->
@@ -14,12 +14,12 @@
     <!-- Section header -->
     <section class="content-header">
         <h1>
-            Target
+            Lead
             <small>List</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{URL::route('user.dashboard')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li class="active">Target</li>
+            <li class="active">Lead</li>
         </ol>
     </section>
     <!-- ./Section header -->
@@ -31,23 +31,23 @@
                     <div class="box-header">
                         <div class="col-md-2" hidden>
                             <div class="form-group has-feedback">
-                                {!! Form::select('section_id',  ['11' => "Deaad", '1' => 'New', '2' => 'In Process'], $status , ['class' => 'form-control select2', 'id' => 'student_list_filter']) !!}
+                                {!! Form::select('section_id', AppHelper::LEAD_STATUS, $status , ['class' => 'form-control select2', 'id' => 'student_list_filter']) !!}
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group has-feedback">
-                                {!! Form::select('status', ['0' => 'All','11' => "Dead", '1' => 'New', '2' => 'In Process'], $status , ['class' => 'form-control select2 student_list_filter', 'required' => 'true']) !!}
+                                {!! Form::select('status', ["0" => "All"] + AppHelper::LEAD_STATUS, $status , ['class' => 'form-control select2 student_list_filter', 'required' => 'true']) !!}
                             </div>
                         </div>
                         <div class="box-tools pull-right">
-                            <a class="btn btn-info btn-sm" href="{{ URL::route('target.import') }}"><i class="fa fa-plus-circle"></i> Import File</a>
+                            <a class="btn btn-info btn-sm" href="{{ URL::route('lead.import') }}"><i class="fa fa-plus-circle"></i> Import File</a>
                         </div>
                         <div class="box-tools pull-right">
                             <input type="text" name="stage" value="{{$stage}}" hidden/>
                             <a class="btn btn-info btn-sm" id="student-export"><i class="fa fa-plus-circle"></i> Export File</a>
                         </div>
                         <div class="box-tools pull-right">
-                            <a class="btn btn-info btn-sm" href="{{ URL::route('target.create') }}"><i class="fa fa-plus-circle"></i> Add New</a>
+                            <a class="btn btn-info btn-sm" href="{{ URL::route('lead.create') }}"><i class="fa fa-plus-circle"></i> Add New</a>
                         </div> 
                     </div>
                     <!-- /.box-header -->
@@ -83,7 +83,19 @@
                                             </span>
                                         @elseif($student->status == 'In Process')
                                             <span class="badge-status bg-blue">
-                                                In Process
+                                                Ready to PT
+                                            </span>
+                                        @elseif($student->status == 'Ready to PT')
+                                            <span class="badge-status bg-blue">
+                                                Ready to PT
+                                            </span>
+                                        @elseif($student->status == 'Ready to Demo')
+                                            <span class="badge-status bg-gray">
+                                                Ready to Demo
+                                            </span>
+                                        @elseif($student->status == 'PT/Demo')
+                                            <span class="badge-status bg-gray">
+                                                PT/Demo
                                             </span>
                                         @elseif($student->status == 'Dead')
                                             <span class="badge-status bg-gray">
@@ -96,16 +108,16 @@
                                     <td>{{ $student->compaign ?? ''}}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a title="Details"  href="{{URL::route('target.show',$student->id)}}"  class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>
+                                            <a title="Details"  href="{{URL::route('lead.show',$student->id)}}"  class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>
                                             </a>
                                         </div>
                                         <div class="btn-group">
-                                            <a title="Edit" href="{{URL::route('target.edit',$student->id)}}" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a title="Edit" href="{{URL::route('lead.edit',$student->id)}}" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
                                             </a>
                                         </div>
                                         <!-- todo: have problem in mobile device -->
                                         <div class="btn-group">
-                                            <form  class="myAction" method="POST" action="{{URL::route('target.destroy', $student->id)}}">
+                                            <form  class="myAction" method="POST" action="{{URL::route('lead.destroy', $student->id)}}">
                                                 @csrf
                                                 <input name="_method" type="hidden" value="DELETE">
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Delete">

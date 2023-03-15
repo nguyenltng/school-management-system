@@ -183,16 +183,25 @@ Route::group(
 
 
     // target routes
+    Route::get('target/import', 'TargetController@showImport')->name('target.showImport');
     Route::post('target/import', 'TargetController@import')->name('target.import');
     Route::get('target/export', 'TargetController@export')->name('target.export');
+    Route::get('target/change-stage', 'TargetController@changeStage')->name('target.stage');
     Route::resource('target', 'TargetController');
     
-    // Route::group(['prefix'=>'target'], function(){
-    //     Route::post('/import', 'TargetController@import')->name('target.import');
-    //     Route::get('/export', 'TargetController@export')->name('target.export');
 
-    // });
 
+    // lead routes
+    Route::get('lead/import', 'LeadController@showImport')->name('lead.showImport');
+    Route::post('lead/import', 'LeadController@import')->name('lead.import');
+    Route::get('lead/export', 'LeadController@export')->name('lead.export');
+    Route::get('lead/change-stage', 'LeadController@changeStage')->name('lead.stage');
+    Route::resource('lead', 'LeadController');
+    
+
+    Route::get('student/import', 'StudentController@showImport')->name('student.showImport');
+    Route::post('student/import', 'StudentController@import')->name('student.import');
+    Route::get('student/export', 'StudentController@export')->name('student.export');
     // student routes
     Route::resource('student', 'StudentController');
     Route::post('student/status/{id}', 'StudentController@changeStatus')->name('student.status');

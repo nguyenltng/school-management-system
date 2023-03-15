@@ -99,16 +99,51 @@ class AppHelper
         2 => 'China',
         3 => 'Other',
     ];
-    const BLOOD_GROUP = [
-        1 => 'A+',
-        2 => 'O+',
-        3 => 'B+',
-        4 => 'AB+',
-        5 => 'A-',
-        6 => 'O-',
-        7 => 'B-',
-        8 => 'AB-',
+    const STUDENT_STAGE = [
+        'TARGET' => 0,
+        'LEAD' => 1,
+        'STUDENT' => 2
+    
     ];
+
+    const STUDENTS_STATUS = [
+        1 => 'New',
+        2 => 'In Process',
+        3 => 'Ready to PT',
+        4 => 'Ready to Demo',
+        5 => 'PT/Demo',
+        6 => 'Waiting for clas',
+        7 => 'Delay',
+        8 => 'Outstanding',
+        9 => 'Finish',
+        10 => 'Stop',
+        11 => 'Dead',
+    ];
+
+    const TARGET_STATUS = [
+        1 => 'New',
+        2 => 'In Process',
+        11 => 'Dead',
+    ];
+
+    const LEAD_STATUS = [
+        1 => 'New',
+        2 => 'In Process',
+        3 => 'Ready to PT',
+        4 => 'Ready to Demo',
+        5 => 'PT/Demo',
+        11 => 'Dead',
+    ];
+
+    const STUDENT_STATUS = [
+        6 => 'Waiting for clas',
+        7 => 'Delay',
+        8 => 'Outstanding',
+        9 => 'Finish',
+        10 => 'Stop',
+        11 => 'Dead',
+    ];
+
 
     const SUBJECT_TYPE = [
         1 => 'Core',

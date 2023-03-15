@@ -27,12 +27,12 @@
             <a href="#"  class="btn-ta btn-sm-ta btn-print btnPrintInformation"><i class="fa fa-print"></i> Print</a>
         </div>
         <div class="btn-group">
-            <a href="{{URL::route('target.edit',$student->id)}}" class="btn-ta btn-sm-ta"><i class="fa fa-edit"></i> Edit</a>
+            <a href="{{URL::route('lead.edit',$student->id)}}" class="btn-ta btn-sm-ta"><i class="fa fa-edit"></i> Edit</a>
         </div>
 
         <ol class="breadcrumb">
             <li><a href="{{URL::route('user.dashboard')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="{{URL::route('target.index')}}"><i class="fa icon-student"></i> Target</a></li>
+            <li><a href="{{URL::route('lead.index')}}"><i class="fa icon-student"></i> Lead</a></li>
             <li class="active">View</li>
         </ol>
         @endnotrole

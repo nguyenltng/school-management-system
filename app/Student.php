@@ -47,6 +47,7 @@ class Student extends Model
         'sms_receive_no',
         'siblings',
         'status',
+        'stage',
     ];
 
     public function registration()
@@ -65,6 +66,13 @@ class Student extends Model
         }
         return "";
     }
+    public function getStatusAttribute($value)
+    {
+        if($value) {
+            return Arr::get(AppHelper::STUDENTS_STATUS, $value);
+        }
+        return "";
+    }
 
     // composer require haruncpi/laravel-id-generator
     public static function boot()
@@ -76,11 +84,5 @@ class Student extends Model
         });
     }
 
-    // public function getBloodGroupAttribute($value)
-    // {
-    //     if($value) {
-    //         return Arr::get(AppHelper::BLOOD_GROUP, $value);
-    //     }
-    //     return "";
-    // }
+  
 }

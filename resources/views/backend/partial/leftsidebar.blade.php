@@ -25,6 +25,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ URL::route('lead.index') }}">
+                        <i class="fa fa-user-plus"></i> <span>Leads</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ URL::route('student.index') }}">
                         <i class="fa icon-student"></i> <span>Students</span>
                     </a>

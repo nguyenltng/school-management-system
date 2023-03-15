@@ -2,7 +2,7 @@
 @extends('backend.layouts.master')
 
 <!-- Page title -->
-@section('pageTitle') Target @endsection
+@section('pageTitle') Lead @endsection
 <!-- End block -->
 
 <!-- Page body extra class -->
@@ -14,12 +14,12 @@
     <!-- Section header -->
     <section class="content-header">
         <h1>
-            Target
+            Lead
             <small>@if($regiInfo) Update @else Add New @endif</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{URL::route('user.dashboard')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="{{URL::route('target.index')}}"><i class="fa icon-student"></i> Target</a></li>
+            <li><a href="{{URL::route('lead.index')}}"><i class="fa icon-student"></i> Lead</a></li>
             <li class="active">@if($regiInfo) Update @else Add @endif</li>
         </ol>
     </section>
@@ -29,11 +29,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-info">
-                    <form novalidate id="entryForm" action="@if($regiInfo) {{URL::Route('target.update', $student->id)}} @else {{URL::Route('target.store')}} @endif" method="post" enctype="multipart/form-data">
+                    <form novalidate id="entryForm" action="@if($regiInfo) {{URL::Route('lead.update', $student->id)}} @else {{URL::Route('lead.store')}} @endif" method="post" enctype="multipart/form-data">
                         <div class="box-body">
                             @csrf
                             @if($regiInfo)  {{ method_field('PATCH') }} @endif
-                            <p class="lead section-title">Student Info:</p>
+                            <p class="target section-title">Student Info:</p>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
@@ -106,7 +106,7 @@
                                         <label for="status">Status<span class="text-danger">*</span>
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="select status"></i>
                                         </label>
-                                        {!! Form::select('status', AppHelper::TARGET_STATUS , $status ?? '' , ['class' => 'form-control', 'required' => 'true']) !!}
+                                        {!! Form::select('status', AppHelper::LEAD_STATUS , $status ?? '' , ['class' => 'form-control', 'required' => 'true']) !!}
                                         <span class="form-control-feedback"></span>
                                         <span class="text-danger">{{ $errors->first('status') }}</span>
                                     </div>
@@ -159,7 +159,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="lead  section-title">Guardian Info:</p>
+                            <p class="target section-title">Guardian Info:</p>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group has-feedback">
@@ -240,16 +240,16 @@
                         </div>
                         <!-- /.box-body -->
                         <div class="box-footer">
-                            <a href="{{URL::route('target.index')}}" class="btn btn-default">Cancel</a>
+                            <a href="{{URL::route('lead.index')}}" class="btn btn-default">Cancel</a>
                             <button type="submit" class="btn btn-info pull-right"><i class="fa @if($regiInfo) fa-refresh @else fa-plus-circle @endif"></i> @if($regiInfo) Update @else Add @endif</button>
                             
                             @if($regiInfo)
-                            <button type="submit" class="btn btn-info bg-green" form="changeStatus"><i class="fa fa-plus-circle"></i> Move to Lead</button>
+                            <button type="submit" class="btn btn-info bg-green" form="changeStatus"><i class="fa fa-plus-circle"></i> Move to Student</button>
                             @endif
                         </div>
                     </form>
                     @if($regiInfo)
-                    <form id="changeStatus" action="{{URL::Route('target.stage')}}" method="get" enctype="multipart/form-data">
+                    <form id="changeStatus" action="{{URL::Route('lead.stage')}}" method="get" enctype="multipart/form-data">
                         <input type="text" name="stage" value="{{$student->stage}}" hidden>
                         <input type="text" name="id" value="{{$student->id}}" hidden>
                     </form>

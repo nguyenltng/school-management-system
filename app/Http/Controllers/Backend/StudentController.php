@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\AcademicYear;
-use App\Http\Helpers\AppHelper;
-use App\IClass;
 use App\Mark;
-use App\Registration;
+use App\User;
+use App\IClass;
 use App\Section;
 use App\Student;
 use App\Subject;
-use App\User;
 use App\UserRole;
 use Carbon\Carbon;
+use App\AcademicYear;
+use App\Registration;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
+use App\Exports\StudentExport;
+use App\Http\Helpers\AppHelper;
+use App\Imports\StudentsImport;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
@@ -28,71 +31,16 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
+        $stage = AppHelper::STUDENT_STAGE['STUDENT'];
+        $status = $request->get('status');
 
+        $students = Student::if($status, 'status', '=', $status)
+            ->where('stage', $stage)
+            ->orderBy('id', 'asc')
+            ->get();
 
-        $classes = IClass::where('status', AppHelper::ACTIVE)
-            ->orderBy('order','asc')
-            ->pluck('name', 'id');
-
-        //if its college then have to get those academic years
-        $academic_years = [];
-        if(AppHelper::getInstituteCategory() == 'college') {
-            $academic_years = AcademicYear::where('status', '1')->orderBy('id', 'desc')->pluck('title', 'id');
-        }
-
-        $iclass = null;
-        $students = [];
-        $sections = [];
-        $status = '1';
-
-        // get query parameter for filter the fetch
-        $class_id = $request->query->get('class',0);
-        $section_id = $request->query->get('section',0);
-        $acYear = $request->query->get('academic_year',0);
-        $status = $request->query->get('status','1');
-
-
-        $classInfo = null;
-        $sectionInfo = null;
-        if($class_id){
-
-            if(AppHelper::getInstituteCategory() != 'college') {
-                // now check is academic year set or not
-                $settings = AppHelper::getAppSettings();
-                if(!isset($settings['academic_year']) || (int)($settings['academic_year']) < 1){
-                    return redirect()->route('student.index')
-                        ->with("error",'Academic year not set yet! Please go to settings and set it.')
-                        ->withInput();
-                }
-                $acYear = $settings['academic_year'];
-            }
-
-
-            //get student
-            $students = Registration::where('class_id', $class_id)
-                ->where('academic_year_id', $acYear)
-                ->where('status', $status)
-                ->section($section_id)
-                ->with('student')
-                ->orderBy('student_id','asc')
-                ->get();
-
-            //if section is mention then full this class section list
-            if($section_id){
-                $sections = Section::where('status', AppHelper::ACTIVE)
-                    ->where('class_id', $class_id)
-                    ->orderBy('name','asc')
-                    ->pluck('name', 'id');
-
-            }
-
-            $iclass = $class_id;
-
-        }
-
-        return view('backend.student.list', compact('students', 'classes', 'iclass', 'sections',
-            'section_id', 'academic_years', 'acYear', 'status'
-        ));
+        //if section is mention then full this class section list
+        return view('backend.student.list', compact('students', 'status' ,'stage'));
 
     }
 
@@ -1077,5 +1025,39 @@ class StudentController extends Controller
 
         return response()->json($students);
 
+    }
+
+    public function import(Request $request)
+    {
+        try {
+
+            $stage = (int)$request->get('stage');
+            Excel::import(new StudentsImport($stage), request()->file('file'));
+            return back()->with('success', 'Leads Imported Successfully.');
+        } catch (\Exception $exception) {
+            // return back();
+            var_dump($exception->getMessage());
+        }
+    }
+
+    public function export(Request $request)
+    {
+        try {
+            $status = $request->query->get('status', 0);
+            $stage = $request->query->get('stage');
+            return Excel::download(new StudentExport($status, $stage), 'student.xlsx');
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            die;
+        }
+    }
+    public function showImport()
+    {
+        try {
+            return view('backend.lead.import');
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            die;
+        }
     }
 }
