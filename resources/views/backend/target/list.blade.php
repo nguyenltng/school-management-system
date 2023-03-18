@@ -31,7 +31,7 @@
                     <div class="box-header">
                         <div class="col-md-2" hidden>
                             <div class="form-group has-feedback">
-                                {!! Form::select('section_id',  ['11' => "Deaad", '1' => 'New', '2' => 'In Process'], $status , ['class' => 'form-control select2', 'id' => 'student_list_filter']) !!}
+                                {!! Form::select('section_id',   , $status , ['class' => 'form-control select2', 'id' => 'student_list_filter']) !!}
                             </div>
                         </div>
                         <div class="col-md-2">
