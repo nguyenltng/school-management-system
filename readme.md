@@ -24,23 +24,6 @@
 
   **For Windows run below commands before cloning the Repo.**
 
-  ```
-  git config --global core.eol lf
-  git config --global core.autocrlf false
-  ```
-
-  ```
-  $ git clone https://github.com/hrshadhin/school-management-system.git cloudschool
-  ```
-
-- change directory
-  ```
-  $ cd cloudschool
-  ```
-- Copy sample `env` file and change configuration according to your need in ".env" file and create Database
-  ```
-  $ cp .env.example .env
-  ```
 - Install php libraries
   ```
   $ composer install
@@ -89,10 +72,6 @@
   $ npm install
   $ npm run backend-prod
   $ npm run frontend-prod
-  ```
-- Start development server
-  ```
-  $ php artisan serve
   ```
 
 #### Use the app
